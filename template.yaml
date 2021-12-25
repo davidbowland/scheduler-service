@@ -17,21 +17,14 @@ Transform:
 Resources:
   # This is the Lambda function definition associated with the source code: sqs-payload-logger.js. For all available properties, see
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-  ScheduledEventLogger:
+  SchedulerEventService:
     Type: AWS::Serverless::Function
     Properties:
-      Description: A Lambda function that logs the payload of messages sent to an associated SQS queue.
+      Description: A Lambda to be invoked when a EventBridge event happens, hitting an endpoint to kick off subsequent functionality.
       Runtime: nodejs14.x
       Architectures:
         - x86_64
-      Handler: src/handlers/scheduled-event-logger.scheduledEventLoggerHandler
-      # This property associates this Lambda function with a scheduled CloudWatch Event. For all available properties, see
-      # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#schedule
-      # This example runs every hour.
-      Events:
-        CloudWatchEvent:
-          Type: Schedule
-          Properties:
-            Schedule: cron(0 * * * ? *)
+      Handler: handlers/scheduled-event.scheduledEventHandler
+      CodeUri: './dist'
       MemorySize: 128
-      Timeout: 100
+      Timeout: 15

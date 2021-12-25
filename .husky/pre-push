@@ -3,18 +3,7 @@
 # Stop immediately on error
 set -e
 
-
-### Lambdas
-
 # Double-check linting on all files
 npx eslint --fix .
 # Ensure tests pass and coverage is met before push
 npx jest --colors
-
-
-### Infrastructure
-
-cd infrastructure
-
-# Double-check linting on all files
-npm run lint
