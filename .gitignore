@@ -1,0 +1,6 @@
+node_modules/
+.aws-sam/
+dist/
+coverage/
+public/
+.DS_Store

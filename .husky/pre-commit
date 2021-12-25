@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Stop immediately on error
+set -e
+
+# Prettify all files and lint JavaScript files
+npx lint-staged
