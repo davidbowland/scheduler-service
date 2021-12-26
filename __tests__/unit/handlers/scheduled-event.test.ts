@@ -1,5 +1,5 @@
-// Import all functions from scheduled-event-logger.js
-import { scheduledEventHandler } from '../../../src/handlers/scheduled-event'
+import { event } from '../__mocks__'
+import { ScheduledEvent, scheduledEventHandler } from '../../../src/handlers/scheduled-event'
 
 const mockAxios = jest.fn()
 jest.mock(
@@ -10,13 +10,12 @@ jest.mock(
 )
 jest.mock('axios-retry')
 
-const mockHandleErrorNoDefault = jest.fn()
+const mockSendErrorEmail = jest.fn()
+jest.mock('../../../src/services/queue-api', () => ({
+  sendErrorEmail: (...args) => mockSendErrorEmail(...args),
+}))
 const mockLog = jest.fn()
 jest.mock('../../../src/util/error-handling', () => ({
-  handleErrorNoDefault:
-    () =>
-      (...args) =>
-        mockHandleErrorNoDefault(...args),
   log:
     () =>
       (...args) =>
@@ -29,11 +28,9 @@ describe('scheduled-event', () => {
   })
 
   describe('scheduledEventHandler', () => {
-    const event = { url: 'http://api.bowland.link/v1/plural-noun' }
-
     test('expect valid event invokes axios', async () => {
       await scheduledEventHandler(event)
-      expect(mockAxios).toHaveBeenCalledWith(event)
+      expect(mockAxios).toHaveBeenCalledWith(event.request)
     })
 
     test('expect axios reject invokes handleErrorNoDefault', async () => {
@@ -41,11 +38,13 @@ describe('scheduled-event', () => {
       mockAxios.mockRejectedValueOnce(rejectReason)
 
       await scheduledEventHandler(event)
-      expect(mockHandleErrorNoDefault).toHaveBeenCalledWith(rejectReason)
+      expect(mockSendErrorEmail).toHaveBeenCalledWith(event, rejectReason)
     })
 
     test('expect invalid event rejects', async () => {
-      await expect(scheduledEventHandler({})).rejects.toBeTruthy()
+      const invalidEvent = {} as ScheduledEvent
+      await scheduledEventHandler(invalidEvent)
+      expect(mockSendErrorEmail).toHaveBeenCalledWith(invalidEvent, new Error('No URL passed to scheduler-service'))
     })
   })
 })

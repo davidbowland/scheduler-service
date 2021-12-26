@@ -1,3 +1,4 @@
 {
-  "url": "https://jokes-api.bowland.link/v1/jokes/random"
+  "resources": ["arn:aws:events:us-east-2::rule/test-rule"],
+  "request": { "url": "https://jokes-api.bowland.link/v1/jokes/random" }
 }

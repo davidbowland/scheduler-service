@@ -5,7 +5,7 @@ describe('error-handling', () => {
 
   describe('handleErrorNoDefault', () => {
     test.each(['Hello', 0, null, undefined, { a: 1, b: 2 }])(
-      'expect logFunc to have been called with message',
+      'expect logFunc to have been called with message (message=%s)',
       (value) => {
         const message = `Error message for value ${JSON.stringify(value)}`
         const error = new Error(message)
@@ -19,7 +19,7 @@ describe('error-handling', () => {
 
   describe('log', () => {
     test.each(['Hello', 0, null, undefined, { a: 1, b: 2 }])(
-      'expect logFunc to have been called with message',
+      'expect logFunc to have been called with message (message=%s)',
       (value) => {
         const message = `Log message for value ${JSON.stringify(value)}`
 

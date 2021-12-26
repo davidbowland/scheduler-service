@@ -1,16 +1,21 @@
 import axios, { AxiosRequestConfig } from 'axios'
-import axiosRetry from 'axios-retry'
 
-import { handleErrorNoDefault, log } from '../util/error-handling'
+import { sendErrorEmail } from '../services/queue-api'
+import { log } from '../util/error-handling'
 
-axiosRetry(axios, { retries: 3 })
+export interface ScheduledEvent {
+  request: AxiosRequestConfig
+  resources: string[]
+}
 
-const isValidRequest = (event: AxiosRequestConfig): boolean => Boolean(event.url)
+const extractAxiosRequest = (event: ScheduledEvent): Promise<AxiosRequestConfig> =>
+  event?.request?.url ? Promise.resolve(event.request) : Promise.reject(new Error('No URL passed to scheduler-service'))
 
-export const scheduledEventHandler = (event: AxiosRequestConfig) =>
-  isValidRequest(event)
-    ? (log()('Scheduled event', event.url),
-    axios(event)
-      .then((response) => response.data)
-      .catch(handleErrorNoDefault()))
-    : Promise.reject(new Error('No URL passed to scheduler-service'))
+const logUrl = (request: AxiosRequestConfig): AxiosRequestConfig => (log()('Scheduled event URL', request.url), request)
+
+export const scheduledEventHandler = (event: ScheduledEvent) =>
+  extractAxiosRequest(event)
+    .then(logUrl)
+    .then(axios)
+    .then((response) => response.data)
+    .catch((error) => sendErrorEmail(event, error))

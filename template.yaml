@@ -28,3 +28,10 @@ Resources:
       CodeUri: './dist'
       MemorySize: 128
       Timeout: 15
+      Policies:
+        - Statement:
+            - Sid: GetApiKeyPolicy
+              Effect: Allow
+              Action:
+                - apigateway:GET
+              Resource: 'arn:aws:apigateway:us-east-1::/apikeys'
