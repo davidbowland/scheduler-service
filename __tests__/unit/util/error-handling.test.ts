@@ -1,4 +1,4 @@
-import { handleErrorNoDefault, log } from '../../../src/util/error-handling'
+import { handleErrorNoDefault, log } from '@util/error-handling'
 
 describe('error-handling', () => {
   const logFunc = jest.fn()

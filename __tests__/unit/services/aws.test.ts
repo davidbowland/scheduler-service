@@ -1,4 +1,4 @@
-import { getApiKey } from '../../../src/services/aws'
+import { getApiKey } from '@services/aws'
 
 const mockGetApiKeys = jest.fn()
 jest.mock('aws-sdk', () => ({

@@ -1,20 +1,18 @@
-import { event } from '../__mocks__'
-import { apiKeyName, apiUrl, notificationFrom, notificationTarget } from '../../../src/config'
-import { ScheduledEvent } from '../../../src/handlers/scheduled-event'
-import * as queueApi from '../../../src/services/queue-api'
-import { convertErrorToText, sendErrorEmail } from '../../../src/services/queue-api'
+import axios from 'axios'
+import { mocked } from 'jest-mock'
 
-const mockPost = jest.fn()
-jest.mock('axios', () => ({
-  post: (...args) => mockPost(...args),
-}))
+import { event } from '../__mocks__'
+import { apiKeyName, apiUrl, notificationFrom, notificationTarget } from '@config'
+import { ScheduledEvent } from '@handlers/scheduled-event'
+import * as aws from '@services/aws'
+import * as queueApi from '@services/queue-api'
+import { convertErrorToText, sendErrorEmail } from '@services/queue-api'
+
+jest.mock('axios')
 jest.mock('axios-retry')
-const mockGetApiKey = jest.fn()
-jest.mock('../../../src/services/aws', () => ({
-  getApiKey: (...args) => mockGetApiKey(...args),
-}))
+jest.mock('@services/aws')
 const mockHandleErrorNoDefault = jest.fn()
-jest.mock('../../../src/util/error-handling', () => ({
+jest.mock('@util/error-handling', () => ({
   handleErrorNoDefault:
     () =>
       (...args) =>
@@ -43,23 +41,23 @@ describe('queue-api', () => {
     const mockConvertErrorToText = jest.spyOn(queueApi, 'convertErrorToText')
 
     beforeAll(() => {
-      mockGetApiKey.mockResolvedValue(apiKey)
+      mocked(aws).getApiKey.mockResolvedValue(apiKey)
     })
 
     test('expect getApiKey to be invoked with API key name', async () => {
       await sendErrorEmail(event, error)
-      expect(mockGetApiKey).toHaveBeenCalledWith(apiKeyName)
+      expect(mocked(aws).getApiKey).toHaveBeenCalledWith(apiKeyName)
     })
 
     test('expect handleErrorNoDefault to be invoked when getApiKey rejects', async () => {
-      mockGetApiKey.mockRejectedValueOnce(undefined)
+      mocked(aws).getApiKey.mockRejectedValueOnce(undefined)
       await sendErrorEmail(event, error)
       expect(mockHandleErrorNoDefault).toHaveBeenCalled()
     })
 
     test('expect axios.post to be invoked with API key', async () => {
       await sendErrorEmail(event, error)
-      expect(mockPost).toHaveBeenCalledWith(
+      expect(mocked(axios).post).toHaveBeenCalledWith(
         expect.anything(),
         expect.anything(),
         expect.objectContaining({ headers: { 'x-api-key': apiKey } })
@@ -71,7 +69,7 @@ describe('queue-api', () => {
       mockConvertErrorToText.mockReturnValue(convertedText)
 
       await sendErrorEmail(event, error)
-      expect(mockPost).toHaveBeenCalledWith(
+      expect(mocked(axios).post).toHaveBeenCalledWith(
         '/v1/emails',
         {
           from: notificationFrom,
@@ -88,14 +86,14 @@ describe('queue-api', () => {
     })
 
     test('expect handleErrorNoDefault to be invoked when axios.post rejects', async () => {
-      mockPost.mockRejectedValueOnce(undefined)
+      ;(mocked(axios).post as jest.Mock).mockRejectedValueOnce(undefined)
       await sendErrorEmail(event, error)
       expect(mockHandleErrorNoDefault).toHaveBeenCalled()
     })
 
     test('expect returns error', async () => {
       const result = await sendErrorEmail(event, error)
-      expect(result).toEqual(`Error: ${error}`)
+      expect(result).toEqual(`${error}`)
     })
   })
 })
