@@ -15,6 +15,12 @@ Transform:
 # Resources declares the AWS resources that you want to include in the stack
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
+  LambdaLogGroup:
+    Type: AWS::Logs::LogGroup
+    DependsOn: [SchedulerEventService]
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${SchedulerEventService}
+      RetentionInDays: 90
   # This is the Lambda function definition associated with the source code: sqs-payload-logger.js. For all available properties, see
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
   SchedulerEventService:
