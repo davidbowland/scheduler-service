@@ -32,4 +32,4 @@ export const sendErrorEmail = (event: ScheduledEvent, error: unknown): Promise<u
         .then((body) => axios.post('/v1/emails', body, { baseURL: apiUrl, headers: { 'x-api-key': apiKey } }))
     )
     .catch(handleErrorNoDefault())
-    .then(() => `Error: ${error}`)
+    .then(() => `${error}`)

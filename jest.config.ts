@@ -88,9 +88,7 @@ export default {
   moduleNameMapper: {
     '^@config$': '<rootDir>/src/config',
     '^@handlers/(.*)$': '<rootDir>/src/handlers/$1',
-    '^@mocks$': '<rootDir>/__tests__/unit/__mocks__',
     '^@services/(.*)$': '<rootDir>/src/services/$1',
-    '^@src/(.*)$': '<rootDir>/src/$1',
     '^@util/(.*)$': '<rootDir>/src/util/$1',
   },
 
