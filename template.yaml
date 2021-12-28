@@ -35,3 +35,10 @@ Resources:
               Action:
                 - apigateway:GET
               Resource: 'arn:aws:apigateway:us-east-1::/apikeys'
+
+  LambdaLogGroup:
+    Type: AWS::Logs::LogGroup
+    DependsOn: [SchedulerEventService]
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${SchedulerEventService}
+      RetentionInDays: 90

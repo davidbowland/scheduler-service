@@ -11,7 +11,7 @@ import { handleErrorNoDefault } from '../util/error-handling'
 export const convertErrorToText = (event: ScheduledEvent, error: unknown): string =>
   `There was an error processing EventBridge rule ${escape(
     JSON.stringify(event?.resources)
-  )}\n\nUnable to invoke URL: ${escape(event?.request?.url)}\n\nEncountered error: ${escape(error)}`
+  )}\n\nUnable to invoke URL: ${escape(event?.request?.url)}\n\nEncountered error: ${escape(error as string)}`
 
 const convertTextToEmail = (text: string) => ({
   from: notificationFrom,
