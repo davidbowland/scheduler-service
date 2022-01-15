@@ -2,19 +2,20 @@ import axios from 'axios'
 import { mocked } from 'jest-mock'
 
 import { event } from '../__mocks__'
-import { ScheduledEvent, scheduledEventHandler } from '@handlers/scheduled-event'
+import { scheduledEventHandler } from '@handlers/scheduled-event'
 import * as queueApi from '@services/queue-api'
+import { ScheduledEvent } from '@types'
+import * as logging from '@utils/logging'
 
 jest.mock('axios')
 jest.mock('axios-retry')
 jest.mock('@services/queue-api')
-jest.mock('@util/error-handling', () => ({
-  log: () => () => undefined,
-}))
+jest.mock('@utils/logging')
 
 describe('scheduled-event', () => {
   beforeAll(() => {
     mocked(axios).mockResolvedValue(undefined)
+    mocked(logging).log.mockResolvedValue(undefined)
   })
 
   describe('scheduledEventHandler', () => {

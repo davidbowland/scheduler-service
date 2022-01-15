@@ -28,14 +28,5 @@ describe('aws', () => {
       const result = await getApiKey(apiKeyName)
       expect(result).toEqual(expectedValue)
     })
-
-    test.each([undefined, {}, { items: [] }, { items: [{}] }])(
-      'expect empty key when data missing (data=%s)',
-      async (resolvedValue) => {
-        mockGetApiKeys.mockResolvedValueOnce(resolvedValue)
-        const result = await getApiKey(apiKeyName)
-        expect(result).toEqual('')
-      }
-    )
   })
 })

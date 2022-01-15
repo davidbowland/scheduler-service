@@ -17,6 +17,19 @@ Parameters:
       - test
     Description: Environment for deploy
 
+Mappings:
+  EnvironmentMap:
+    prod:
+      apiKeyName: emails-ApiAp-yI1gb3pwh6ea
+      apiUrl: 'https://emails-queue-api.bowland.link'
+      notificationFrom: do-not-reply@bowland.link
+      notificationTarget: scheduler-service-error@bowland.link
+    test:
+      apiKeyName: emails-ApiAp-rWlNxvI1TJ8Y
+      apiUrl: 'https://emails-queue-api-test.bowland.link'
+      notificationFrom: do-not-reply@test.bowland.link
+      notificationTarget: scheduler-service-error@test.bowland.link
+
 Resources:
   SchedulerEventService:
     Type: AWS::Serverless::Function
@@ -36,6 +49,12 @@ Resources:
               Action:
                 - apigateway:GET
               Resource: 'arn:aws:apigateway:us-east-1::/apikeys'
+      Environment:
+        Variables:
+          API_KEY_NAME: !FindInMap [EnvironmentMap, !Ref Environment, apiKeyName]
+          API_KEY_URL: !FindInMap [EnvironmentMap, !Ref Environment, apiUrl]
+          NOTIFICATION_FROM: !FindInMap [EnvironmentMap, !Ref Environment, notificationFrom]
+          NOTIFICATION_TARGET: !FindInMap [EnvironmentMap, !Ref Environment, notificationTarget]
 
   LambdaLogGroup:
     Type: AWS::Logs::LogGroup
