@@ -9,4 +9,4 @@ export const getApiKey = (name: string): Promise<string> =>
       nameQuery: name,
     })
     .promise()
-    .then((response) => response?.items?.[0]?.value ?? '')
+    .then((response) => response.items[0].value)

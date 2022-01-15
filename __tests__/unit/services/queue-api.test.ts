@@ -3,21 +3,16 @@ import { mocked } from 'jest-mock'
 
 import { event } from '../__mocks__'
 import { apiKeyName, apiUrl, notificationFrom, notificationTarget } from '@config'
-import { ScheduledEvent } from '@handlers/scheduled-event'
 import * as aws from '@services/aws'
 import * as queueApi from '@services/queue-api'
 import { convertErrorToText, sendErrorEmail } from '@services/queue-api'
+import { ScheduledEvent } from '@types'
+import * as logging from '@utils/logging'
 
 jest.mock('axios')
 jest.mock('axios-retry')
 jest.mock('@services/aws')
-const mockHandleErrorNoDefault = jest.fn()
-jest.mock('@util/error-handling', () => ({
-  handleErrorNoDefault:
-    () =>
-      (...args) =>
-        mockHandleErrorNoDefault(...args),
-}))
+jest.mock('@utils/logging')
 
 describe('queue-api', () => {
   const error = new Error('SNAFU')
@@ -30,9 +25,10 @@ describe('queue-api', () => {
       [{ request: {} }, 'undefined', 'undefined'],
     ])('expect event=%s generates text=%', (tempEvent, expectedRule, expectedUrl) => {
       const result = convertErrorToText(tempEvent as ScheduledEvent, error)
-      expect(result).toEqual(
-        `There was an error processing EventBridge rule ${expectedRule}\n\nUnable to invoke URL: ${expectedUrl}\n\nEncountered error: Error: SNAFU`
+      expect(result).toContain(
+        `There was an error processing EventBridge rule ${expectedRule}\n\nUnable to invoke URL: ${expectedUrl}\n\n`
       )
+      expect(result).toContain('encountered error: Error: SNAFU')
     })
   })
 
@@ -52,7 +48,7 @@ describe('queue-api', () => {
     test('expect handleErrorNoDefault to be invoked when getApiKey rejects', async () => {
       mocked(aws).getApiKey.mockRejectedValueOnce(undefined)
       await sendErrorEmail(event, error)
-      expect(mockHandleErrorNoDefault).toHaveBeenCalled()
+      expect(mocked(logging).logError).toHaveBeenCalled()
     })
 
     test('expect axios.post to be invoked with API key', async () => {
@@ -88,7 +84,7 @@ describe('queue-api', () => {
     test('expect handleErrorNoDefault to be invoked when axios.post rejects', async () => {
       ;(mocked(axios).post as jest.Mock).mockRejectedValueOnce(undefined)
       await sendErrorEmail(event, error)
-      expect(mockHandleErrorNoDefault).toHaveBeenCalled()
+      expect(mocked(logging).logError).toHaveBeenCalled()
     })
 
     test('expect returns error', async () => {

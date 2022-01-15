@@ -3,15 +3,17 @@ import escape from 'escape-html'
 
 import { getApiKey } from './aws'
 import { apiKeyName, apiUrl, notificationFrom, notificationTarget } from '../config'
-import { ScheduledEvent } from '../handlers/scheduled-event'
-import { handleErrorNoDefault } from '../util/error-handling'
+import { ScheduledEvent } from '../types'
+import { log, logError } from '../utils/logging'
 
 /* Emails */
 
-export const convertErrorToText = (event: ScheduledEvent, error: unknown): string =>
+export const convertErrorToText = (event: ScheduledEvent, error: Error): string =>
   `There was an error processing EventBridge rule ${escape(
     JSON.stringify(event?.resources)
-  )}\n\nUnable to invoke URL: ${escape(event?.request?.url)}\n\nEncountered error: ${escape(error as string)}`
+  )}\n\nUnable to invoke URL: ${escape(
+    event?.request?.url
+  )}\n\nAt ${new Date().toISOString()} encountered error: ${escape(error as unknown as string)}\n${escape(error.stack)}`
 
 const convertTextToEmail = (text: string) => ({
   from: notificationFrom,
@@ -31,5 +33,6 @@ export const sendErrorEmail = (event: ScheduledEvent, error: unknown): Promise<u
         .then(convertTextToEmail)
         .then((body) => axios.post('/v1/emails', body, { baseURL: apiUrl, headers: { 'x-api-key': apiKey } }))
     )
-    .catch(handleErrorNoDefault())
+    .then(() => log(error))
+    .catch(logError)
     .then(() => `${error}`)

@@ -3,12 +3,9 @@ import axiosRetry from 'axios-retry'
 
 axiosRetry(axios, { retries: 3 })
 
-// API Gateway
-
-export const apiKeyName = 'emails-ApiAp-T7wqFPvc4X1x'
-
 // Queue API
 
-export const apiUrl = 'https://emails-queue-api.bowland.link'
-export const notificationFrom = 'do-not-reply@bowland.link'
-export const notificationTarget = 'scheduler-service-error@bowland.link'
+export const apiKeyName = process.env.API_KEY_NAME as string
+export const apiUrl = process.env.API_KEY_URL as string
+export const notificationFrom = process.env.NOTIFICATION_FROM as string
+export const notificationTarget = process.env.NOTIFICATION_TARGET as string

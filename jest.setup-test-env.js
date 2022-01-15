@@ -1,7 +1,6 @@
-// S3
+// Queue API
 
-process.env.EMAIL_BUCKET = 'test-bucket'
-
-// SES
-
-process.env.EMAIL_REGION = 'us-east-1'
+process.env.API_KEY_NAME = 'api-76trfcvjuyt'
+process.env.API_KEY_URL = 'https://api.bowland.link'
+process.env.NOTIFICATION_FROM = 'do-not-reply@email.address'
+process.env.NOTIFICATION_TARGET = 'notification@email.address'
