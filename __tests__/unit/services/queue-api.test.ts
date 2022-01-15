@@ -67,16 +67,14 @@ describe('queue-api', () => {
       await sendErrorEmail(event, error)
       expect(mocked(axios).post).toHaveBeenCalledWith(
         '/v1/emails',
-        {
+        expect.objectContaining({
           from: notificationFrom,
-          html: `<p>${convertedText.replace(/\n/g, '<br>')}</p>`,
           references: [],
           replyTo: notificationFrom,
           sender: notificationFrom,
           subject: 'Error executing EventBridge event',
-          text: convertedText,
           to: [notificationTarget],
-        },
+        }),
         expect.objectContaining({ baseURL: apiUrl })
       )
     })

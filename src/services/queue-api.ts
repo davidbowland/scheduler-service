@@ -26,13 +26,15 @@ const convertTextToEmail = (text: string) => ({
   html: `<p>${text.replace(/\n/g, '<br>')}</p>`,
 })
 
-export const sendErrorEmail = (event: ScheduledEvent, error: unknown): Promise<unknown> =>
-  getApiKey(apiKeyName)
-    .then((apiKey) =>
-      Promise.resolve(exports.convertErrorToText(event, error))
-        .then(convertTextToEmail)
-        .then((body) => axios.post('/v1/emails', body, { baseURL: apiUrl, headers: { 'x-api-key': apiKey } }))
-    )
-    .then(() => log(error))
-    .catch(logError)
-    .then(() => `${error}`)
+export const sendErrorEmail = async (event: ScheduledEvent, error: Error): Promise<string> => {
+  try {
+    const apiKey = await getApiKey(apiKeyName)
+    const text = convertErrorToText(event, error)
+    const email = convertTextToEmail(text)
+    await axios.post('/v1/emails', email, { baseURL: apiUrl, headers: { 'x-api-key': apiKey } })
+    log(error)
+  } catch (error) {
+    logError(error)
+  }
+  return `${error}`
+}
