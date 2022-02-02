@@ -11,23 +11,15 @@ env:
   PIPELINE_USER_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   SAM_TEMPLATE: template.yaml
   TESTING_STACK_NAME: scheduler-service-test
-  TESTING_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-test-sch-PipelineExecutionRole-1KNCX7EK11922
-  TESTING_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-test-CloudFormationExecutionR-6SUFL5DR81KB
-  TESTING_ARTIFACTS_BUCKET: dbowland-lambda-source
-  # If there are functions with "Image" PackageType in your template,
-  # uncomment the line below and add "--image-repository ${TESTING_IMAGE_REPOSITORY}" to
-  # testing "sam package" and "sam deploy" commands.
-  # TESTING_IMAGE_REPOSITORY = '0123456789.dkr.ecr.region.amazonaws.com/repository-name'
-  TESTING_REGION: ${{ secrets.AWS_REGION }}
+  TESTING_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-schedule-PipelineExecutionRole-148B3Z4ODKMRL
+  TESTING_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-sched-CloudFormationExecutionR-UI41L8HEPZPO
+  TESTING_ARTIFACTS_BUCKET: aws-sam-cli-managed-scheduler-ser-artifactsbucket-9h8554qrf0m1
+  TESTING_REGION: us-east-2
   PROD_STACK_NAME: scheduler-service
-  PROD_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-prod-sch-PipelineExecutionRole-3HGI6TG7CT1M
-  PROD_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-prod-CloudFormationExecutionR-B7LG87HCRIBH
-  PROD_ARTIFACTS_BUCKET: dbowland-lambda-source
-  # If there are functions with "Image" PackageType in your template,
-  # uncomment the line below and add "--image-repository ${PROD_IMAGE_REPOSITORY}" to
-  # prod "sam package" and "sam deploy" commands.
-  # PROD_IMAGE_REPOSITORY = '0123456789.dkr.ecr.region.amazonaws.com/repository-name'
-  PROD_REGION: ${{ secrets.AWS_REGION }}
+  PROD_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-schedule-PipelineExecutionRole-ZKTFA1ZU38WS
+  PROD_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-sched-CloudFormationExecutionR-16A08ZP1NRYWY
+  PROD_ARTIFACTS_BUCKET: aws-sam-cli-managed-scheduler-ser-artifactsbucket-1gkjdl3sw14da
+  PROD_REGION: us-east-2
 
 jobs:
   test:
