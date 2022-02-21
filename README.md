@@ -6,13 +6,13 @@ Invokes URLs on a schedule, called through EventBridge.
 
 Create a scheduled event in Event Bridge, select the function that includes "scheduler-service", then choose Input transformer with the following settings:
 
-```
-{"resources":"$.resources"}
+```json
+{ "resources": "$.resources" }
 ```
 
 And these settings, with the request updated to match the [Axios request config](https://axios-http.com/docs/req_config) of the scheduled request to make:
 
-```
+```json
 { "resources": <resources>, "request": { "url": "https://jokes-api.bowland.link/v1/jokes/random" } }
 ```
 

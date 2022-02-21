@@ -11,15 +11,15 @@ env:
   PIPELINE_USER_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   SAM_TEMPLATE: template.yaml
   TESTING_STACK_NAME: scheduler-service-test
-  TESTING_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-schedule-PipelineExecutionRole-148B3Z4ODKMRL
-  TESTING_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-sched-CloudFormationExecutionR-UI41L8HEPZPO
-  TESTING_ARTIFACTS_BUCKET: aws-sam-cli-managed-scheduler-ser-artifactsbucket-9h8554qrf0m1
-  TESTING_REGION: us-east-2
+  TESTING_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/dbowland-pipeline-test
+  TESTING_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/dbowland-cloudformation-test
+  TESTING_ARTIFACTS_BUCKET: dbowland-lambda-east-2-test
+  TESTING_REGION: ${{ secrets.AWS_REGION }}
   PROD_STACK_NAME: scheduler-service
-  PROD_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-schedule-PipelineExecutionRole-ZKTFA1ZU38WS
-  PROD_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-sched-CloudFormationExecutionR-16A08ZP1NRYWY
-  PROD_ARTIFACTS_BUCKET: aws-sam-cli-managed-scheduler-ser-artifactsbucket-1gkjdl3sw14da
-  PROD_REGION: us-east-2
+  PROD_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/dbowland-pipeline
+  PROD_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/dbowland-cloudformation
+  PROD_ARTIFACTS_BUCKET: dbowland-lambda-east-2
+  PROD_REGION: ${{ secrets.AWS_REGION }}
 
 jobs:
   test:
@@ -82,6 +82,7 @@ jobs:
             --capabilities CAPABILITY_IAM \
             --region ${TESTING_REGION} \
             --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
+            --s3-prefix scheduler-service-test \
             --no-fail-on-empty-changeset \
             --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE} \
             --parameter-overrides 'AccountId=${{ secrets.AWS_ACCOUNT_ID }} Environment=test'
@@ -125,6 +126,7 @@ jobs:
         run: |
           sam package \
             --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
+            --s3-prefix scheduler-service-test \
             --region ${TESTING_REGION} \
             --output-template-file packaged-testing.yaml
 
@@ -148,6 +150,7 @@ jobs:
         run: |
           sam package \
             --s3-bucket ${PROD_ARTIFACTS_BUCKET} \
+            --s3-prefix scheduler-service \
             --region ${PROD_REGION} \
             --output-template-file packaged-prod.yaml
 
@@ -188,6 +191,7 @@ jobs:
             --capabilities CAPABILITY_IAM \
             --region ${TESTING_REGION} \
             --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
+            --s3-prefix scheduler-service-test \
             --no-fail-on-empty-changeset \
             --role-arn ${TESTING_CLOUDFORMATION_EXECUTION_ROLE} \
             --parameter-overrides 'AccountId=${{ secrets.AWS_ACCOUNT_ID }} Environment=test'
@@ -224,6 +228,7 @@ jobs:
             --capabilities CAPABILITY_IAM \
             --region ${PROD_REGION} \
             --s3-bucket ${PROD_ARTIFACTS_BUCKET} \
+            --s3-prefix scheduler-service \
             --no-fail-on-empty-changeset \
             --role-arn ${PROD_CLOUDFORMATION_EXECUTION_ROLE} \
             --parameter-overrides 'AccountId=${{ secrets.AWS_ACCOUNT_ID }}'
