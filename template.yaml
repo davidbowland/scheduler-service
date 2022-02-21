@@ -6,9 +6,6 @@ Transform:
   - AWS::Serverless-2016-10-31
 
 Parameters:
-  AccountId:
-    Type: String
-    Description: AWS account ID
   Environment:
     Type: String
     Default: prod
@@ -22,11 +19,13 @@ Mappings:
     prod:
       apiKeyName: emails-ApiAp-yI1gb3pwh6ea
       apiUrl: 'https://emails-queue-api.bowland.link'
+      logStreamFunction: log-subscriber-LogGroupSubscriber-vVxMCBqXplyr
       notificationFrom: do-not-reply@bowland.link
       notificationTarget: scheduler-service-error@bowland.link
     test:
       apiKeyName: emails-ApiAp-rWlNxvI1TJ8Y
       apiUrl: 'https://emails-queue-api-test.bowland.link'
+      logStreamFunction: log-subscriber-test-LogGroupSubscriber-pAJMIulEeHur
       notificationFrom: do-not-reply@test.bowland.link
       notificationTarget: scheduler-service-error@test.bowland.link
 
@@ -62,3 +61,12 @@ Resources:
     Properties:
       LogGroupName: !Sub /aws/lambda/${SchedulerEventService}
       RetentionInDays: 90
+
+  LambdaLogGroupSubscription:
+    Type: AWS::Logs::SubscriptionFilter
+    Properties:
+      DestinationArn: !Sub
+        - 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${Function}'
+        - Function: !FindInMap [EnvironmentMap, !Ref Environment, logStreamFunction]
+      FilterPattern: '[timestamp, uuid, level="ERROR", message]'
+      LogGroupName: !Ref LambdaLogGroup
