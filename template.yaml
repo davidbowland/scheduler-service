@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-  scheduler-service
+  Scheduling lambda invoked on a cron
 
 Transform:
   - AWS::Serverless-2016-10-31
@@ -60,7 +60,7 @@ Resources:
     DependsOn: [SchedulerEventService]
     Properties:
       LogGroupName: !Sub /aws/lambda/${SchedulerEventService}
-      RetentionInDays: 90
+      RetentionInDays: 30
 
   LambdaLogGroupSubscription:
     Type: AWS::Logs::SubscriptionFilter
