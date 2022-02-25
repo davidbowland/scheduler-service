@@ -19,13 +19,13 @@ Mappings:
     prod:
       apiKeyName: emails-ApiAp-yI1gb3pwh6ea
       apiUrl: 'https://emails-queue-api.bowland.link'
-      logStreamFunction: log-subscriber-LogGroupSubscriber-vVxMCBqXplyr
+      logStreamFunction: log-subscriber
       notificationFrom: do-not-reply@bowland.link
       notificationTarget: scheduler-service-error@bowland.link
     test:
       apiKeyName: emails-ApiAp-rWlNxvI1TJ8Y
       apiUrl: 'https://emails-queue-api-test.bowland.link'
-      logStreamFunction: log-subscriber-test-LogGroupSubscriber-pAJMIulEeHur
+      logStreamFunction: log-subscriber-test
       notificationFrom: do-not-reply@test.bowland.link
       notificationTarget: scheduler-service-error@test.bowland.link
 
