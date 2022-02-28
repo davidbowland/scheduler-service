@@ -22,38 +22,42 @@ Mappings:
       logStreamFunction: log-subscriber
       notificationFrom: do-not-reply@bowland.link
       notificationTarget: scheduler-service-error@bowland.link
+      project: scheduler-service
     test:
       apiKeyName: emails-ApiAp-rWlNxvI1TJ8Y
       apiUrl: 'https://emails-queue-api-test.bowland.link'
       logStreamFunction: log-subscriber-test
       notificationFrom: do-not-reply@test.bowland.link
       notificationTarget: scheduler-service-error@test.bowland.link
+      project: scheduler-service-test
 
 Resources:
   SchedulerEventService:
     Type: AWS::Serverless::Function
     Properties:
-      Description: A Lambda to be invoked when a EventBridge event happens, hitting an endpoint to kick off subsequent functionality.
-      Runtime: nodejs14.x
       Architectures:
         - x86_64
-      Handler: handlers/scheduled-event.scheduledEventHandler
       CodeUri: './dist'
-      MemorySize: 128
-      Timeout: 15
-      Policies:
-        - Statement:
-            - Sid: GetApiKeyPolicy
-              Effect: Allow
-              Action:
-                - apigateway:GET
-              Resource: 'arn:aws:apigateway:us-east-1::/apikeys'
+      Description: A Lambda to be invoked when a EventBridge event happens, hitting an endpoint to kick off subsequent functionality.
       Environment:
         Variables:
           API_KEY_NAME: !FindInMap [EnvironmentMap, !Ref Environment, apiKeyName]
           API_KEY_URL: !FindInMap [EnvironmentMap, !Ref Environment, apiUrl]
           NOTIFICATION_FROM: !FindInMap [EnvironmentMap, !Ref Environment, notificationFrom]
           NOTIFICATION_TARGET: !FindInMap [EnvironmentMap, !Ref Environment, notificationTarget]
+      FunctionName: !FindInMap [EnvironmentMap, !Ref Environment, project]
+      Handler: handlers/scheduled-event.scheduledEventHandler
+      MemorySize: 128
+      Policies:
+        - Statement:
+            - Sid: GetApiKeyPolicy
+              Effect: Allow
+              Action:
+                - apigateway:GET
+              Resource:
+                - '*'
+      Runtime: nodejs14.x
+      Timeout: 15
 
   LambdaLogGroup:
     Type: AWS::Logs::LogGroup

@@ -1,8 +1,9 @@
 import axios from 'axios'
 
+import { getApiKeyById } from '../services/aws'
 import { sendErrorEmail } from '../services/queue-api'
-import { AxiosRequestConfig, ScheduledEvent } from '../types'
-import { log } from '../utils/logging'
+import { AxiosRequestConfig, ScheduledEvent, StringObject } from '../types'
+import { log, logError } from '../utils/logging'
 
 const extractAxiosRequest = (event: ScheduledEvent): AxiosRequestConfig => {
   if (event.request?.url) {
@@ -11,13 +12,20 @@ const extractAxiosRequest = (event: ScheduledEvent): AxiosRequestConfig => {
   throw new Error('No URL passed to scheduler-service')
 }
 
+const addApiKeyHeaders = async (headers: StringObject, event: ScheduledEvent): Promise<StringObject> =>
+  event.apiKey
+    ? { ...headers, 'x-api-key': await getApiKeyById(event.apiKey.id, event.apiKey.region ?? 'us-east-2') }
+    : headers
+
 export const scheduledEventHandler = async (event: ScheduledEvent): Promise<any> => {
   try {
     log('Scheduled event URL', event.request?.url)
-    const request = await extractAxiosRequest(event)
-    const response = await axios(request)
+    const request = extractAxiosRequest(event)
+    const headers = await addApiKeyHeaders(request.headers ?? {}, event)
+    const response = await axios({ ...request, headers })
     return response.data
   } catch (error) {
+    logError(error)
     sendErrorEmail(event, error)
   }
 }

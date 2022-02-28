@@ -1,4 +1,8 @@
 {
   "resources": ["arn:aws:events:us-east-2::rule/test-rule"],
-  "request": { "url": "https://jokes-api.bowland.link/v1/jokes/random" }
+  "request": { "url": "https://links-api-internal.bowland.link/v1/start-prune", "method": "POST" },
+  "apiKey": {
+    "id": "mi0s2zrg16",
+    "region": "us-east-2"
+  }
 }

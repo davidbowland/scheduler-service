@@ -37,16 +37,16 @@ describe('queue-api', () => {
     const mockConvertErrorToText = jest.spyOn(queueApi, 'convertErrorToText')
 
     beforeAll(() => {
-      mocked(aws).getApiKey.mockResolvedValue(apiKey)
+      mocked(aws).getApiKeyByName.mockResolvedValue(apiKey)
     })
 
     test('expect getApiKey to be invoked with API key name', async () => {
       await sendErrorEmail(event, error)
-      expect(mocked(aws).getApiKey).toHaveBeenCalledWith(apiKeyName)
+      expect(mocked(aws).getApiKeyByName).toHaveBeenCalledWith(apiKeyName, 'us-east-1')
     })
 
     test('expect handleErrorNoDefault to be invoked when getApiKey rejects', async () => {
-      mocked(aws).getApiKey.mockRejectedValueOnce(undefined)
+      mocked(aws).getApiKeyByName.mockRejectedValueOnce(undefined)
       await sendErrorEmail(event, error)
       expect(mocked(logging).logError).toHaveBeenCalled()
     })
