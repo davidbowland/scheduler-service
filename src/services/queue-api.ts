@@ -1,10 +1,10 @@
 import axios from 'axios'
 import escape from 'escape-html'
 
-import { getApiKey } from './aws'
+import { getApiKeyByName } from './aws'
 import { apiKeyName, apiUrl, notificationFrom, notificationTarget } from '../config'
 import { ScheduledEvent } from '../types'
-import { log, logError } from '../utils/logging'
+import { logError } from '../utils/logging'
 
 /* Emails */
 
@@ -28,11 +28,10 @@ const convertTextToEmail = (text: string) => ({
 
 export const sendErrorEmail = async (event: ScheduledEvent, error: Error): Promise<string> => {
   try {
-    const apiKey = await getApiKey(apiKeyName)
+    const apiKey = await getApiKeyByName(apiKeyName, 'us-east-1')
     const text = convertErrorToText(event, error)
     const email = convertTextToEmail(text)
     await axios.post('/v1/emails', email, { baseURL: apiUrl, headers: { 'x-api-key': apiKey } })
-    log(error)
   } catch (error) {
     logError(error)
   }
