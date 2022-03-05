@@ -59,6 +59,15 @@ Resources:
       Runtime: nodejs14.x
       Timeout: 15
 
+  SchedulerLambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: 'lambda:InvokeFunction'
+      FunctionName: !Sub '${SchedulerEventService.Arn}'
+      Principal: events.amazonaws.com
+      SourceAccount: !Ref AWS::AccountId
+      SourceArn: !Sub 'arn:aws:events:${AWS::Region}:${AWS::AccountId}:rule/*'
+
   LambdaLogGroup:
     Type: AWS::Logs::LogGroup
     DependsOn: [SchedulerEventService]
