@@ -1,4 +1,4 @@
-import { logError, log } from '@utils/logging'
+import { log, logError } from '@utils/logging'
 
 describe('logging', () => {
   const consoleError = console.error

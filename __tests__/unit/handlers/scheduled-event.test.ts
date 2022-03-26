@@ -1,12 +1,12 @@
 import axios from 'axios'
 import { mocked } from 'jest-mock'
 
-import { apiKey, event } from '../__mocks__'
-import { scheduledEventHandler } from '@handlers/scheduled-event'
 import * as awsService from '@services/aws'
-import * as queueApi from '@services/queue-api'
-import { ScheduledEvent } from '@types'
 import * as logging from '@utils/logging'
+import * as queueApi from '@services/queue-api'
+import { apiKey, event } from '../__mocks__'
+import { ScheduledEvent } from '@types'
+import { scheduledEventHandler } from '@handlers/scheduled-event'
 
 jest.mock('axios')
 jest.mock('axios-retry')

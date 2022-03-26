@@ -1,9 +1,9 @@
 import axios from 'axios'
 
-import { getApiKeyById } from '../services/aws'
-import { sendErrorEmail } from '../services/queue-api'
 import { AxiosRequestConfig, ScheduledEvent, StringObject } from '../types'
 import { log, logError } from '../utils/logging'
+import { getApiKeyById } from '../services/aws'
+import { sendErrorEmail } from '../services/queue-api'
 
 const extractAxiosRequest = (event: ScheduledEvent): AxiosRequestConfig => {
   if (event.request?.url) {
