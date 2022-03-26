@@ -1,9 +1,11 @@
 import axios from 'axios'
+import axiosRetry from 'axios-retry'
 
 import { AxiosRequestConfig, ScheduledEvent, StringObject } from '../types'
 import { log, logError } from '../utils/logging'
 import { getApiKeyById } from '../services/aws'
-import { sendErrorEmail } from '../services/queue-api'
+
+axiosRetry(axios, { retries: 3 })
 
 const extractAxiosRequest = (event: ScheduledEvent): AxiosRequestConfig => {
   if (event.request?.url) {
@@ -25,7 +27,6 @@ export const scheduledEventHandler = async (event: ScheduledEvent): Promise<any>
     const response = await axios({ ...request, headers })
     return response.data
   } catch (error) {
-    logError(error)
-    sendErrorEmail(event, error)
+    logError({ error, rule: event.resources, url: event.request?.url })
   }
 }

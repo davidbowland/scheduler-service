@@ -14,7 +14,7 @@
     "prepare": "if [ \"$HUSKY\" != \"0\" ]; then husky install ; fi",
     "start": "npm run build && npm run quick-start",
     "quick-start": "tsc && HUSKY=0 sam build && sam local invoke --event events/event-cloudwatch-event.json",
-    "test": "npm run lint && jest --colors"
+    "test": "jest --colors"
   },
   "repository": {
     "type": "git",
