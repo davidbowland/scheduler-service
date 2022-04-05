@@ -4,3 +4,4 @@ dist/
 coverage/
 public/
 .DS_Store
+local.log

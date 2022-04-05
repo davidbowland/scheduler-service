@@ -2,19 +2,8 @@
   "name": "scheduler-service",
   "description": "Invokes passed URLs, to be called by EventBridge for scheduling",
   "version": "1.13.0",
-  "private": true,
   "engines": {
     "node": "^14.0.0"
-  },
-  "scripts": {
-    "build": "npm run clean && tsc && cp package*.json dist/ && cd dist/ && HUSKY=0 NODE_ENV=production npm ci",
-    "clean": "rm -rf dist coverage && NODE_ENV=test npm ci",
-    "deploy": "npm run build && ./scripts/deploy.sh",
-    "lint": "prettier --write . && eslint --fix . --resolve-plugins-relative-to .",
-    "prepare": "if [ \"$HUSKY\" != \"0\" ]; then husky install ; fi",
-    "start": "npm run build && npm run quick-start",
-    "quick-start": "tsc && HUSKY=0 sam build && sam local invoke --event events/event-cloudwatch-event.json",
-    "test": "jest --colors"
   },
   "repository": {
     "type": "git",
@@ -24,15 +13,15 @@
     "url": "https://github.com/davidbowland/scheduler-service/issues"
   },
   "homepage": "https://github.com/davidbowland/scheduler-service#readme",
-  "lint-staged": {
-    "**/*.{js,jsx,ts,tsx}": [
-      "prettier --write --ignore-unknown",
-      "eslint --resolve-plugins-relative-to . --fix",
-      "jest --colors --findRelatedTests --coverageThreshold '{}'"
-    ],
-    "**/*": [
-      "prettier --write --ignore-unknown"
-    ]
+  "scripts": {
+    "build": "npm run clean && tsc && cp package*.json dist/ && cd dist/ && HUSKY=0 NODE_ENV=production npm ci",
+    "clean": "rm -rf dist coverage && NODE_ENV=test npm ci",
+    "deploy": "npm run build && ./scripts/deploy.sh",
+    "lint": "prettier --write . && eslint --fix . --resolve-plugins-relative-to .",
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky install ; fi",
+    "start": "npm run build && npm run quick-start",
+    "quick-start": "tsc && ./scripts/runLocal.sh",
+    "test": "jest --colors"
   },
   "dependencies": {
     "aws-sdk": "^2.1048.0",
@@ -58,5 +47,15 @@
     "prettier": "^2.5.1",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.4"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "prettier --write --ignore-unknown",
+      "eslint --resolve-plugins-relative-to . --fix",
+      "jest --colors --findRelatedTests --coverageThreshold '{}'"
+    ],
+    "**/*": [
+      "prettier --write --ignore-unknown"
+    ]
   }
 }
