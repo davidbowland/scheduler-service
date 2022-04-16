@@ -43,6 +43,10 @@ Resources:
               Resource:
                 - '*'
       Runtime: nodejs14.x
+      Tags:
+        'created-by': 'scheduler-service'
+        'created-for': 'dbowland'
+        'environment': !Ref Environment
       Timeout: 15
 
   SchedulerLambdaInvokePermission:
@@ -60,6 +64,13 @@ Resources:
     Properties:
       LogGroupName: !Sub /aws/lambda/${SchedulerEventService}
       RetentionInDays: 30
+      Tags:
+        - Key: 'created-by'
+          Value: 'scheduler-service'
+        - Key: 'created-for'
+          Value: 'dbowland'
+        - Key: 'environment'
+          Value: !Ref Environment
 
   LambdaLogGroupSubscription:
     Type: AWS::Logs::SubscriptionFilter
