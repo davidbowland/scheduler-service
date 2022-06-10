@@ -29,12 +29,10 @@ jobs:
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v2
-      - name: Install Node 14
+      - name: Install Node 16
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
-      - name: Install NPM 8
-        run: npm install -g npm@8
+          node-version: 16.x
       - name: Install and audit packages
         run: npm ci && npm audit --audit-level=high
         env:
@@ -50,19 +48,17 @@ jobs:
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v2
-      - name: Install Node 14
+      - name: Install Node 16
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
-      - name: Install NPM 8
-        run: npm install -g npm@8
+          node-version: 16.x
       - uses: actions/setup-python@v2
       - uses: aws-actions/setup-sam@v1
       - name: Build TypeScript into Lambda
         run: npm run build
         env:
           HUSKY: 0
-      - run: sam build --template ${SAM_TEMPLATE} --use-container
+      - run: sam build --template ${SAM_TEMPLATE} --use-container --container-env-var NODE_ENV=production
 
       - name: Assume the testing pipeline user role
         uses: aws-actions/configure-aws-credentials@v1
@@ -95,19 +91,17 @@ jobs:
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v2
-      - name: Install Node 14
+      - name: Install Node 16
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
-      - name: Install NPM 8
-        run: npm install -g npm@8
+          node-version: 16.x
       - uses: actions/setup-python@v2
       - uses: aws-actions/setup-sam@v1
 
       - name: Build resources
         run: |
           npm run build
-          sam build --template ${SAM_TEMPLATE} --use-container
+          sam build --template ${SAM_TEMPLATE} --use-container --container-env-var NODE_ENV=production
         env:
           HUSKY: 0
 
@@ -240,12 +234,10 @@ jobs:
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v2
-      - name: Install Node 14
+      - name: Install Node 16
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
-      - name: Install NPM 8
-        run: npm install -g npm@8
+          node-version: 16.x
       - name: Set git name and email
         run: |
           git config --local user.email "dbowland1+bot@gmail.com"

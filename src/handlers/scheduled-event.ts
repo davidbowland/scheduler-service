@@ -1,7 +1,7 @@
 import axios from 'axios'
 import axiosRetry from 'axios-retry'
 
-import { AxiosRequestConfig, ScheduledEvent, StringObject } from '../types'
+import { AxiosRequestConfig, AxiosRequestHeaders, ScheduledEvent } from '../types'
 import { log, logError } from '../utils/logging'
 import { getApiKeyById } from '../services/aws'
 
@@ -14,10 +14,13 @@ const extractAxiosRequest = (event: ScheduledEvent): AxiosRequestConfig => {
   throw new Error('No URL passed to scheduler-service')
 }
 
-const addApiKeyHeaders = async (headers: StringObject, event: ScheduledEvent): Promise<StringObject> =>
-  event.apiKey
-    ? { ...headers, 'x-api-key': await getApiKeyById(event.apiKey.id, event.apiKey.region ?? 'us-east-2') }
-    : headers
+const addApiKeyHeaders = async (headers: AxiosRequestHeaders, event: ScheduledEvent): Promise<AxiosRequestHeaders> => {
+  if (event.apiKey) {
+    const region = event.apiKey.region ?? 'us-east-2'
+    return { ...headers, 'x-api-key': await getApiKeyById(event.apiKey.id, region) }
+  }
+  return headers
+}
 
 export const scheduledEventHandler = async (event: ScheduledEvent): Promise<any> => {
   try {
