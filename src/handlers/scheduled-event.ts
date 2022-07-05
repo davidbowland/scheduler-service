@@ -4,7 +4,9 @@ import axiosRetry from 'axios-retry'
 import { AxiosRequestConfig, AxiosRequestHeaders, ScheduledEvent } from '../types'
 import { log, logError } from '../utils/logging'
 import { getApiKeyById } from '../services/aws'
+import { xrayCaptureHttps } from '../utils/logging'
 
+xrayCaptureHttps()
 axiosRetry(axios, { retries: 3 })
 
 const extractAxiosRequest = (event: ScheduledEvent): AxiosRequestConfig => {

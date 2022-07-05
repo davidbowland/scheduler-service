@@ -1,7 +1,8 @@
 import { APIGateway } from 'aws-sdk'
+import { xrayCapture } from '../utils/logging'
 
 export const getApiKeyById = (id: string, region = 'us-east-1'): Promise<string> =>
-  new APIGateway({ apiVersion: '2015-07-09', region })
+  xrayCapture(new APIGateway({ apiVersion: '2015-07-09', region }))
     .getApiKey({
       apiKey: id,
       includeValue: true,

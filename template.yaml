@@ -48,6 +48,7 @@ Resources:
         'created-for': 'dbowland'
         'environment': !Ref Environment
       Timeout: 15
+      Tracing: Active
 
   SchedulerLambdaInvokePermission:
     Type: AWS::Lambda::Permission
