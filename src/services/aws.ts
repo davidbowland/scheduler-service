@@ -8,4 +8,4 @@ export const getApiKeyById = (id: string, region = 'us-east-1'): Promise<string>
       includeValue: true,
     })
     .promise()
-    .then((response) => response.value)
+    .then((response: any) => response.value)
