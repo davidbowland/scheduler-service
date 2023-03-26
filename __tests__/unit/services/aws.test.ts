@@ -1,13 +1,14 @@
 import { getApiKeyById } from '@services/aws'
 
 const mockApiGateway = jest.fn()
-const mockGetApiKey = jest.fn()
-jest.mock('aws-sdk', () => ({
-  APIGateway: jest.fn((...args) =>
+const mockSend = jest.fn()
+jest.mock('@aws-sdk/client-api-gateway', () => ({
+  APIGatewayClient: jest.fn((...args) =>
     mockApiGateway.mockReturnValue({
-      getApiKey: (...args) => ({ promise: () => mockGetApiKey(...args) }),
+      send: (...args) => mockSend(...args),
     })(...args)
   ),
+  GetApiKeyCommand: jest.fn().mockImplementation((x) => x),
 }))
 jest.mock('@utils/logging', () => ({
   xrayCapture: jest.fn().mockImplementation((x) => x),
@@ -19,7 +20,7 @@ describe('aws', () => {
     const expectedValue = '97876453rwesfdg'
 
     beforeAll(() => {
-      mockGetApiKey.mockResolvedValue({ value: expectedValue })
+      mockSend.mockResolvedValue({ value: expectedValue })
     })
 
     test('expect APIGateway instantiated with correct region', async () => {
@@ -29,7 +30,7 @@ describe('aws', () => {
 
     test('expect getApiKeys is called with name and includeValues', async () => {
       await getApiKeyById(apiKeyId)
-      expect(mockGetApiKey).toHaveBeenCalledWith({
+      expect(mockSend).toHaveBeenCalledWith({
         apiKey: apiKeyId,
         includeValue: true,
       })

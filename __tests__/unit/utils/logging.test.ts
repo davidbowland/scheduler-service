@@ -1,5 +1,6 @@
 import * as AWSXRay from 'aws-xray-sdk-core'
 import { log, logError, xrayCapture, xrayCaptureHttps } from '@utils/logging'
+import { APIGatewayClient } from '@aws-sdk/client-api-gateway'
 import https from 'https'
 import { mocked } from 'jest-mock'
 
@@ -45,25 +46,25 @@ describe('logging', () => {
   })
 
   describe('xrayCapture', () => {
-    const capturedDynamodb = 'captured_dynamodb'
-    const dynamodb = 'dynamodb'
+    const capturedDynamodb = 'captured-api-gateway' as unknown as APIGatewayClient
+    const apiGateway = 'api-gateway'
 
     beforeAll(() => {
-      mocked(AWSXRay).captureAWSClient.mockReturnValue(capturedDynamodb)
+      mocked(AWSXRay).captureAWSv3Client.mockReturnValue(capturedDynamodb)
     })
 
-    test('expect AWSXRay.captureAWSClient when x-ray is enabled (not running locally)', () => {
+    test('expect AWSXRay.captureAWSv3Client when x-ray is enabled (not running locally)', () => {
       process.env.AWS_SAM_LOCAL = 'false'
-      const result = xrayCapture(dynamodb)
-      expect(mocked(AWSXRay).captureAWSClient).toHaveBeenCalledWith(dynamodb)
+      const result = xrayCapture(apiGateway)
+      expect(mocked(AWSXRay).captureAWSv3Client).toHaveBeenCalledWith(apiGateway)
       expect(result).toEqual(capturedDynamodb)
     })
 
     test('expect same object when x-ray is disabled (running locally)', () => {
       process.env.AWS_SAM_LOCAL = 'true'
-      const result = xrayCapture(dynamodb)
-      expect(mocked(AWSXRay).captureAWSClient).toHaveBeenCalledTimes(0)
-      expect(result).toEqual(dynamodb)
+      const result = xrayCapture(apiGateway)
+      expect(mocked(AWSXRay).captureAWSv3Client).toHaveBeenCalledTimes(0)
+      expect(result).toEqual(apiGateway)
     })
   })
 
