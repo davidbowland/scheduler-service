@@ -25,11 +25,13 @@ describe('aws', () => {
 
     test('expect APIGateway instantiated with correct region', async () => {
       await getApiKeyById(apiKeyId, 'us-west-2')
+
       expect(mockApiGateway).toHaveBeenCalledWith(expect.objectContaining({ region: 'us-west-2' }))
     })
 
     test('expect getApiKeys is called with name and includeValues', async () => {
       await getApiKeyById(apiKeyId)
+
       expect(mockSend).toHaveBeenCalledWith({
         apiKey: apiKeyId,
         includeValue: true,
@@ -38,6 +40,7 @@ describe('aws', () => {
 
     test('result from getApiKeys to be returned', async () => {
       const result = await getApiKeyById(apiKeyId)
+
       expect(result).toEqual(expectedValue)
     })
   })

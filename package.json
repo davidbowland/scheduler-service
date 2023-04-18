@@ -23,7 +23,17 @@
     "quick-start": "tsc && ./scripts/runLocal.sh",
     "test": "jest --colors",
     "typecheck": "tsc --noEmit",
-    "update": "ncu -u --doctor && npm audit fix --audit-level=none && npm run test && npm dedupe"
+    "update": "ncu -u -x '@types/node' --doctor && npm audit fix --audit-level=none && npm run test && npm dedupe"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "prettier --write --ignore-unknown",
+      "eslint --resolve-plugins-relative-to . --fix",
+      "jest --colors --findRelatedTests --coverageThreshold '{}'"
+    ],
+    "**/*": [
+      "prettier --write --ignore-unknown"
+    ]
   },
   "dependencies": {
     "@aws-sdk/client-api-gateway": "^3.315.0",
@@ -48,15 +58,5 @@
     "prettier": "^2.8.7",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4"
-  },
-  "lint-staged": {
-    "**/*.{js,jsx,ts,tsx}": [
-      "prettier --write --ignore-unknown",
-      "eslint --resolve-plugins-relative-to . --fix",
-      "jest --colors --findRelatedTests --coverageThreshold '{}'"
-    ],
-    "**/*": [
-      "prettier --write --ignore-unknown"
-    ]
   }
 }

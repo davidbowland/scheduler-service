@@ -7,17 +7,9 @@ import { mocked } from 'jest-mock'
 jest.mock('aws-xray-sdk-core')
 
 describe('logging', () => {
-  const consoleError = console.error
-  const consoleLog = console.log
-
   beforeAll(() => {
     console.error = jest.fn()
     console.log = jest.fn()
-  })
-
-  afterAll(() => {
-    console.error = consoleError
-    console.log = consoleLog
   })
 
   describe('log', () => {
@@ -25,8 +17,8 @@ describe('logging', () => {
       'expect logFunc to have been called with message',
       async (value) => {
         const message = `Log message for value ${JSON.stringify(value)}`
-
         await log(message)
+
         expect(console.log).toHaveBeenCalledWith(message)
       }
     )
@@ -38,8 +30,8 @@ describe('logging', () => {
       async (value) => {
         const message = `Error message for value ${JSON.stringify(value)}`
         const error = new Error(message)
-
         await logError(error)
+
         expect(console.error).toHaveBeenCalledWith(error)
       }
     )
@@ -56,6 +48,7 @@ describe('logging', () => {
     test('expect AWSXRay.captureAWSv3Client when x-ray is enabled (not running locally)', () => {
       process.env.AWS_SAM_LOCAL = 'false'
       const result = xrayCapture(apiGateway)
+
       expect(mocked(AWSXRay).captureAWSv3Client).toHaveBeenCalledWith(apiGateway)
       expect(result).toEqual(capturedDynamodb)
     })
@@ -63,6 +56,7 @@ describe('logging', () => {
     test('expect same object when x-ray is disabled (running locally)', () => {
       process.env.AWS_SAM_LOCAL = 'true'
       const result = xrayCapture(apiGateway)
+
       expect(mocked(AWSXRay).captureAWSv3Client).toHaveBeenCalledTimes(0)
       expect(result).toEqual(apiGateway)
     })
@@ -72,12 +66,14 @@ describe('logging', () => {
     test('expect AWSXRay.captureHTTPsGlobal when x-ray is enabled (not running locally)', () => {
       process.env.AWS_SAM_LOCAL = 'false'
       xrayCaptureHttps()
+
       expect(mocked(AWSXRay).captureHTTPsGlobal).toHaveBeenCalledWith(https)
     })
 
     test('expect same object when x-ray is disabled (running locally)', () => {
       process.env.AWS_SAM_LOCAL = 'true'
       xrayCaptureHttps()
+
       expect(mocked(AWSXRay).captureHTTPsGlobal).toHaveBeenCalledTimes(0)
     })
   })
