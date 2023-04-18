@@ -18,8 +18,8 @@
     "linebreak-style": ["error", "unix"],
     "quotes": ["error", "single", { "avoidEscape": true }],
     "semi": ["error", "never"],
-    "sort-imports": ["error", { "allowSeparatedGroups": true }],
-    "sort-keys": ["error", "asc", { "caseSensitive": true, "natural": false }],
+    "sort-imports": ["error", { "allowSeparatedGroups": true, "ignoreCase": true }],
+    "sort-keys": ["error", "asc", { "caseSensitive": false, "natural": false }],
     "sort-vars": ["error"]
   },
   "globals": {
