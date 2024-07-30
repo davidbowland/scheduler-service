@@ -22,8 +22,8 @@ The `developer` role is required to deploy this project.
 
 ### Node / NPM
 
-1. [Node 18](https://nodejs.org/en/)
-1. [NPM 9+](https://www.npmjs.com/)
+1. [Node](https://nodejs.org/en/)
+1. [NPM](https://www.npmjs.com/)
 
 ### AWS Credentials
 
