@@ -29,10 +29,9 @@ Resources:
     Properties:
       Architectures:
         - x86_64
-      CodeUri: './dist'
       Description: A Lambda to be invoked when a EventBridge event happens, hitting an endpoint to kick off subsequent functionality.
       FunctionName: !FindInMap [EnvironmentMap, !Ref Environment, project]
-      Handler: handlers/scheduled-event.scheduledEventHandler
+      Handler: src/handlers/scheduled-event.scheduledEventHandler
       MemorySize: 128
       Policies:
         - Statement:
@@ -49,6 +48,14 @@ Resources:
         'environment': !Ref Environment
       Timeout: 15
       Tracing: Active
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: 'es2020'
+        Sourcemap: true
+        EntryPoints:
+          - src/handlers/scheduled-event.ts
 
   SchedulerLambdaInvokePermission:
     Type: AWS::Lambda::Permission

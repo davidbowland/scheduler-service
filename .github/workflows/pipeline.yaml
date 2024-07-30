@@ -54,11 +54,8 @@ jobs:
           node-version: 20.x
       - uses: actions/setup-python@v5
       - uses: aws-actions/setup-sam@v2
-      - name: Build TypeScript into Lambda
-        run: npm run build
-        env:
-          HUSKY: 0
-      - run: sam build --template ${SAM_TEMPLATE} --use-container --container-env-var NODE_ENV=production
+      - name: Build resources
+        run: sam build --template ${SAM_TEMPLATE} --use-container --container-env-var NODE_ENV=production
 
       - name: Assume the testing pipeline user role
         uses: aws-actions/configure-aws-credentials@v4
@@ -97,13 +94,8 @@ jobs:
           node-version: 20.x
       - uses: actions/setup-python@v5
       - uses: aws-actions/setup-sam@v2
-
       - name: Build resources
-        run: |
-          npm run build
-          sam build --template ${SAM_TEMPLATE} --use-container --container-env-var NODE_ENV=production
-        env:
-          HUSKY: 0
+        run: sam build --template ${SAM_TEMPLATE} --use-container --container-env-var NODE_ENV=production
 
       - name: Assume the testing pipeline user role
         uses: aws-actions/configure-aws-credentials@v4
