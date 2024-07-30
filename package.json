@@ -1,7 +1,7 @@
 {
   "name": "scheduler-service",
   "description": "Invokes passed URLs, to be called by EventBridge for scheduling",
-  "version": "1.19.0",
+  "version": "1.20.0",
   "engines": {
     "node": "^20.0.0"
   },
