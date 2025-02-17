@@ -1,6 +1,7 @@
 name: Pipeline
 
 env:
+  GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
   HUSKY: 0
   PIPELINE_USER_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   PIPELINE_USER_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -250,7 +251,7 @@ jobs:
           node-version: 22.x
       - name: Set git name and email
         run: |
-          git config --local user.email "dbowland1+bot@gmail.com"
+          git config --local user.email "${GIT_EMAIL}"
           git config --local user.name "github-actions[bot]"
       - name: Bump the minor version
         run: npm version minor
