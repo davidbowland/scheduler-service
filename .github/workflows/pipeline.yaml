@@ -1,20 +1,20 @@
 name: Pipeline
 
 env:
+  HUSKY: 0
   PIPELINE_USER_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   PIPELINE_USER_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  SAM_TEMPLATE: template.yaml
-  TESTING_STACK_NAME: scheduler-service-test
-  TESTING_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/dbowland-pipeline-test
-  TESTING_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/dbowland-cloudformation-test
-  TESTING_ARTIFACTS_BUCKET: dbowland-lambda-east-2-test
-  TESTING_REGION: ${{ secrets.AWS_REGION }}
-  PROD_STACK_NAME: scheduler-service
-  PROD_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/dbowland-pipeline
-  PROD_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/dbowland-cloudformation
   PROD_ARTIFACTS_BUCKET: dbowland-lambda-east-2
+  PROD_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/dbowland-cloudformation
+  PROD_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/dbowland-pipeline
   PROD_REGION: ${{ secrets.AWS_REGION }}
-  HUSKY: 0
+  PROD_STACK_NAME: scheduler-service
+  SAM_TEMPLATE: template.yaml
+  TESTING_ARTIFACTS_BUCKET: dbowland-lambda-east-2-test
+  TESTING_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/dbowland-cloudformation-test
+  TESTING_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/dbowland-pipeline-test
+  TESTING_REGION: ${{ secrets.AWS_REGION }}
+  TESTING_STACK_NAME: scheduler-service-test
 
 on: push
 
@@ -29,10 +29,10 @@ jobs:
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v4
-      - name: Install Node 20
+      - name: Install Node 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
       - name: Install and audit packages
         run: npm ci && npm audit --audit-level=high
         env:
@@ -55,10 +55,10 @@ jobs:
       - name: Install AWS SAM
         uses: aws-actions/setup-sam@v2
 
-      - name: Install Node 20
+      - name: Install Node 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
       - name: Build resources
         run: sam build --template ${SAM_TEMPLATE} --use-container --container-env-var NODE_ENV=production
 
@@ -100,10 +100,10 @@ jobs:
       - name: Install AWS SAM
         uses: aws-actions/setup-sam@v2
 
-      - name: Install Node 20
+      - name: Install Node 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
       - name: Build resources
         run: sam build --template ${SAM_TEMPLATE} --use-container --container-env-var NODE_ENV=production
 
@@ -244,10 +244,10 @@ jobs:
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v4
-      - name: Install Node 20
+      - name: Install Node 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
       - name: Set git name and email
         run: |
           git config --local user.email "dbowland1+bot@gmail.com"
