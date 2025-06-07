@@ -1,7 +1,6 @@
 import { APIGatewayClient } from '@aws-sdk/client-api-gateway'
 import * as AWSXRay from 'aws-xray-sdk-core'
 import https from 'https'
-import { mocked } from 'jest-mock'
 
 import { log, logError, xrayCapture, xrayCaptureHttps } from '@utils/logging'
 
@@ -43,14 +42,14 @@ describe('logging', () => {
     const apiGateway = 'api-gateway'
 
     beforeAll(() => {
-      mocked(AWSXRay).captureAWSv3Client.mockReturnValue(capturedDynamodb)
+      jest.mocked(AWSXRay).captureAWSv3Client.mockReturnValue(capturedDynamodb)
     })
 
     it('should use AWSXRay.captureAWSv3Client when x-ray is enabled (not running locally)', () => {
       process.env.AWS_SAM_LOCAL = 'false'
       const result = xrayCapture(apiGateway)
 
-      expect(mocked(AWSXRay).captureAWSv3Client).toHaveBeenCalledWith(apiGateway)
+      expect(AWSXRay.captureAWSv3Client).toHaveBeenCalledWith(apiGateway)
       expect(result).toEqual(capturedDynamodb)
     })
 
@@ -58,7 +57,7 @@ describe('logging', () => {
       process.env.AWS_SAM_LOCAL = 'true'
       const result = xrayCapture(apiGateway)
 
-      expect(mocked(AWSXRay).captureAWSv3Client).toHaveBeenCalledTimes(0)
+      expect(AWSXRay.captureAWSv3Client).toHaveBeenCalledTimes(0)
       expect(result).toEqual(apiGateway)
     })
   })
@@ -68,14 +67,14 @@ describe('logging', () => {
       process.env.AWS_SAM_LOCAL = 'false'
       xrayCaptureHttps()
 
-      expect(mocked(AWSXRay).captureHTTPsGlobal).toHaveBeenCalledWith(https)
+      expect(AWSXRay.captureHTTPsGlobal).toHaveBeenCalledWith(https)
     })
 
     it('should not call captureHTTPsGlobal when x-ray is disabled (running locally)', () => {
       process.env.AWS_SAM_LOCAL = 'true'
       xrayCaptureHttps()
 
-      expect(mocked(AWSXRay).captureHTTPsGlobal).toHaveBeenCalledTimes(0)
+      expect(AWSXRay.captureHTTPsGlobal).toHaveBeenCalledTimes(0)
     })
   })
 })
