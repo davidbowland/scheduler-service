@@ -20,7 +20,6 @@
     "no-negated-condition": ["error"],
     "quotes": ["error", "single", { "avoidEscape": true }],
     "semi": ["error", "never"],
-    "sort-imports": ["error", { "allowSeparatedGroups": true, "ignoreCase": true }],
     "sort-keys": ["error", "asc", { "caseSensitive": false, "natural": false }],
     "sort-vars": ["error"]
   },

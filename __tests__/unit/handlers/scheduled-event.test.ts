@@ -1,11 +1,11 @@
 import axios from 'axios'
 import { mocked } from 'jest-mock'
 
-import * as awsService from '@services/aws'
-import * as logging from '@utils/logging'
 import { apiKey, event } from '../__mocks__'
-import { ScheduledEvent } from '@types'
 import { scheduledEventHandler } from '@handlers/scheduled-event'
+import * as awsService from '@services/aws'
+import { ScheduledEvent } from '@types'
+import * as logging from '@utils/logging'
 
 jest.mock('axios')
 jest.mock('axios-retry')
@@ -19,13 +19,13 @@ describe('scheduled-event', () => {
   })
 
   describe('scheduledEventHandler', () => {
-    test('expect valid event invokes axios', async () => {
+    it('should invoke axios with a valid event', async () => {
       await scheduledEventHandler(event)
 
       expect(mocked(axios)).toHaveBeenCalledWith(expect.objectContaining(event.request))
     })
 
-    test('expect API key header added when requested', async () => {
+    it('should add API key header when requested', async () => {
       const apiKeyEvent = { ...event, apiKey: { id: 'anApiKey', region: 'us-west-2' } }
       await scheduledEventHandler(apiKeyEvent)
 
@@ -33,14 +33,14 @@ describe('scheduled-event', () => {
       expect(mocked(axios)).toHaveBeenCalledWith(expect.objectContaining({ headers: { 'x-api-key': apiKey } }))
     })
 
-    test('expect API key header defaults to us-east-2', async () => {
+    it('should default API key header region to us-east-2', async () => {
       const apiKeyEvent = { ...event, apiKey: { id: 'anApiKey' } } as unknown as ScheduledEvent
       await scheduledEventHandler(apiKeyEvent)
 
       expect(mocked(awsService).getApiKeyById).toHaveBeenCalledWith('anApiKey', 'us-east-2')
     })
 
-    test('expect axios reject invokes logError and sendErrorEmail', async () => {
+    it('should invoke logError when axios rejects', async () => {
       const rejectReason = 'stomachache'
       mocked(axios).mockRejectedValueOnce(rejectReason)
       await scheduledEventHandler(event)
@@ -52,7 +52,7 @@ describe('scheduled-event', () => {
       })
     })
 
-    test('expect invalid event logs error', async () => {
+    it('should log error for invalid event', async () => {
       const invalidEvent = {} as ScheduledEvent
       await scheduledEventHandler(invalidEvent)
 
@@ -63,7 +63,7 @@ describe('scheduled-event', () => {
       })
     })
 
-    test('expect event with no request logs error', async () => {
+    it('should log error for event with no request', async () => {
       const invalidEvent = { ...event, request: undefined } as ScheduledEvent
       await scheduledEventHandler(invalidEvent)
 

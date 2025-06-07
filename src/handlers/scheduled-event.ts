@@ -1,9 +1,9 @@
 import axios from 'axios'
 import axiosRetry from 'axios-retry'
 
+import { getApiKeyById } from '../services/aws'
 import { AxiosRequestConfig, AxiosRequestHeaders, ScheduledEvent } from '../types'
 import { log, logError } from '../utils/logging'
-import { getApiKeyById } from '../services/aws'
 import { xrayCaptureHttps } from '../utils/logging'
 
 xrayCaptureHttps()

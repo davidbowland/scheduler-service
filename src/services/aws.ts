@@ -1,4 +1,5 @@
 import { APIGatewayClient, GetApiKeyCommand } from '@aws-sdk/client-api-gateway'
+
 import { xrayCapture } from '../utils/logging'
 
 export const getApiKeyById = async (id: string, region = 'us-east-1'): Promise<string> => {

@@ -6,7 +6,7 @@ jest.mock('@aws-sdk/client-api-gateway', () => ({
   APIGatewayClient: jest.fn((...args) =>
     mockApiGateway.mockReturnValue({
       send: (...args) => mockSend(...args),
-    })(...args)
+    })(...args),
   ),
   GetApiKeyCommand: jest.fn().mockImplementation((x) => x),
 }))
@@ -23,13 +23,13 @@ describe('aws', () => {
       mockSend.mockResolvedValue({ value: expectedValue })
     })
 
-    test('expect APIGateway instantiated with correct region', async () => {
+    it('should instantiate APIGateway with correct region', async () => {
       await getApiKeyById(apiKeyId, 'us-west-2')
 
       expect(mockApiGateway).toHaveBeenCalledWith(expect.objectContaining({ region: 'us-west-2' }))
     })
 
-    test('expect getApiKeys is called with name and includeValues', async () => {
+    it('should call getApiKeys with name and includeValues', async () => {
       await getApiKeyById(apiKeyId)
 
       expect(mockSend).toHaveBeenCalledWith({
@@ -38,7 +38,7 @@ describe('aws', () => {
       })
     })
 
-    test('result from getApiKeys to be returned', async () => {
+    it('should return result from getApiKeys', async () => {
       const result = await getApiKeyById(apiKeyId)
 
       expect(result).toEqual(expectedValue)
