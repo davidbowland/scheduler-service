@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Devil's Advocate Review",
+  "description": "After each task completes, critically review the changes as a devil's advocate. Check if the code will actually work, is easy to read and understand, follows best practices, and has good domain separation.",
+  "version": "1",
+  "when": {
+    "type": "postTaskExecution"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Review the changes just made as a devil's advocate. Be critical and thorough. Check: 1) Will this actually work in production? Look for edge cases, race conditions, and failure modes. 2) Is the code easy to read and understand? Would a new team member follow it? 3) Does it follow best practices for the language and framework? 4) Is domain separation clean — are responsibilities in the right layers? Flag any concerns, no matter how small. Be honest, not polite."
+  }
+}

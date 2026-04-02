@@ -41,7 +41,7 @@ Resources:
                 - apigateway:GET
               Resource:
                 - '*'
-      Runtime: nodejs22.x
+      Runtime: nodejs24.x
       Tags:
         'created-by': 'scheduler-service'
         'created-for': 'dbowland'
