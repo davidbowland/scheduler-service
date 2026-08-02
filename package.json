@@ -17,7 +17,7 @@
     "clean": "rm -rf .aws-sam coverage && NODE_ENV=test npm ci",
     "deploy": "NODE_ENV=production npm ci && ./scripts/deploy.sh",
     "lint": "prettier --write . && eslint --fix .",
-    "prepare": "husky",
+    "prepare": "husky || true",
     "start": "./scripts/runLocal.sh",
     "test": "jest --colors",
     "typecheck": "tsc --noEmit",
