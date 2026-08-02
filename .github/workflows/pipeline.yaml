@@ -19,6 +19,10 @@ env:
 
 on: push
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
 permissions:
   contents: write
 
@@ -29,13 +33,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout latest code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install Node 24
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24.x
       - name: Install and audit packages
-        run: npm ci && npm audit --audit-level=high
+        run: npm ci && npm audit --audit-level=critical
         env:
           NODE_ENV: test
       - name: Run tests
@@ -48,23 +52,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout latest code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install Python 3
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: 3.12
       - name: Install AWS SAM
-        uses: aws-actions/setup-sam@v2
+        uses: aws-actions/setup-sam@v3
 
       - name: Install Node 24
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24.x
       - name: Build resources
         run: sam build --template ${SAM_TEMPLATE} --use-container --container-env-var NODE_ENV=production
 
       - name: Assume the testing pipeline user role
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
@@ -93,23 +97,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout latest code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install Python 3
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: 3.12
       - name: Install AWS SAM
-        uses: aws-actions/setup-sam@v2
+        uses: aws-actions/setup-sam@v3
 
       - name: Install Node 24
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24.x
       - name: Build resources
         run: sam build --template ${SAM_TEMPLATE} --use-container --container-env-var NODE_ENV=production
 
       - name: Assume the testing pipeline user role
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
@@ -127,13 +131,13 @@ jobs:
             --region ${TESTING_REGION} \
             --output-template-file packaged-testing.yaml
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: packaged-testing.yaml
           path: packaged-testing.yaml
 
       - name: Assume the prod pipeline user role
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
@@ -151,7 +155,7 @@ jobs:
             --region ${PROD_REGION} \
             --output-template-file packaged-prod.yaml
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: packaged-prod.yaml
           path: packaged-prod.yaml
@@ -163,19 +167,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout latest code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install Python 3
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: 3.12
       - name: Install AWS SAM
-        uses: aws-actions/setup-sam@v2
-      - uses: actions/download-artifact@v4
+        uses: aws-actions/setup-sam@v3
+      - uses: actions/download-artifact@v8
         with:
           name: packaged-testing.yaml
 
       - name: Assume the testing pipeline user role
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
@@ -204,19 +208,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout latest code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install Python 3
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: 3.12
       - name: Install AWS SAM
-        uses: aws-actions/setup-sam@v2
-      - uses: actions/download-artifact@v4
+        uses: aws-actions/setup-sam@v3
+      - uses: actions/download-artifact@v8
         with:
           name: packaged-prod.yaml
 
       - name: Assume the prod pipeline user role
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ env.PIPELINE_USER_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.PIPELINE_USER_SECRET_ACCESS_KEY }}
@@ -244,9 +248,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout latest code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install Node 24
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24.x
       - name: Set git name and email
