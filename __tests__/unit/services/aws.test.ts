@@ -10,9 +10,6 @@ jest.mock('@aws-sdk/client-api-gateway', () => ({
   ),
   GetApiKeyCommand: jest.fn().mockImplementation((x) => x),
 }))
-jest.mock('@utils/logging', () => ({
-  xrayCapture: jest.fn().mockImplementation((x) => x),
-}))
 
 describe('aws', () => {
   describe('getApiKeyById', () => {
